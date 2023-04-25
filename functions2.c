@@ -16,26 +16,26 @@ int print_pointer(va_list types, char buffer[],
 {
 	char extra_char = 0;
 	char padd = ' ';
-	int ind = BUFF_SIZE - 2, len = 2, padd_start = 1; /* length=2, for '0x' */
-	unsigned long num_addrs;
+	int ind = BUFF_SIZE - 2, len = 2, padd_start = 1;
+	unsigned long num_address;
 	char map_to[] = "0123456789abcdef";
-	void *addrs = va_arg(types, void *);
+	void *address = va_arg(types, void *);
 
 	UNUSED(width);
 	UNUSED(size);
 
-	if (addrs == NULL)
+	if (address == NULL)
 		return (write(1, "(nil)", 5));
 
 	buffer[BUFF_SIZE - 1] = '\0';
 	UNUSED(precision);
 
-	num_addrs = (unsigned long)addrs;
+	num_address = (unsigned long)address;
 
-	while (num_addrs > 0)
+	while (num_address > 0)
 	{
-		buffer[ind--] = map_to[num_addrs % 16];
-		num_addrs /= 16;
+		buffer[ind--] = map_to[num_address % 16];
+		num_address /= 16;
 		len++;
 	}
 
@@ -48,7 +48,6 @@ int print_pointer(va_list types, char buffer[],
 
 	ind++;
 
-	/*return (write(1, &buffer[i], BUFF_SIZE - i - 1));*/
 	return (write_pointer(buffer, ind, length,
 		width, flags, padd, extra_c, padd_start));
 }
@@ -69,22 +68,22 @@ int print_non_printable(va_list types, char buffer[],
 {
 	int i = 0;
  	int offset = 0;
-	char *str = va_arg(types, char *);
+	char *string = va_arg(types, char *);
 
 	UNUSED(flags);
 	UNUSED(width);
 	UNUSED(precision);
 	UNUSED(size);
 
-	if (str == NULL)
+	if (string == NULL)
 		return (write(1, "(null)", 6));
 
-	while (str[i] != '\0')
+	while (string[i] != '\0')
 	{
-		if (is_printable(str[i]))
-			buffer[i + offset] = str[i];
+		if (is_printable(string[i]))
+			buffer[i + offset] = string[i];
 		else
-			offset += append_hexa_code(str[i], buffer, i + offset);
+			offset += append_hexa_code(string[i], buffer, i + offset);
 
 		i++;
 	}
@@ -97,7 +96,7 @@ int print_non_printable(va_list types, char buffer[],
 /******************** PRINT REVERSE ********************/
 /**
  * print_reverse - Prints reverse string.
- * @types: Lista of arguments
+ * @types: List of arguments
  * @buffer: Buffer array
  * @flags:  Calculates active flags
  * @width: get width
@@ -109,7 +108,7 @@ int print_non_printable(va_list types, char buffer[],
 int print_reverse(va_list types, char buffer[],
 	int flags, int width, int precision, int size)
 {
-	char *str;
+	char *string;
 	int i = 0;
        	int count = 0;
 
@@ -118,20 +117,20 @@ int print_reverse(va_list types, char buffer[],
 	UNUSED(width);
 	UNUSED(size);
 
-	str = va_arg(types, char *);
+	string = va_arg(types, char *);
 
-	if (str == NULL)
+	if (string == NULL)
 	{
 		UNUSED(precision);
 
-		str = ")Null(";
+		string = ")Null(";
 	}
-	for (i = 0; str[i]; i++)
+	for (i = 0; string[i]; i++)
 		;
 
 	for (i = i - 1; i >= 0; i--)
 	{
-		char z = str[i];
+		char z = string[i];
 
 		write(1, &z, 1);
 		count++;
@@ -141,7 +140,7 @@ int print_reverse(va_list types, char buffer[],
 /******************** PRINT A STRING IN ROT13 ********************/
 /**
  * print_rot13string - Print a string in rot13.
- * @types: Lista of arguments
+ * @types: List of arguments
  * @buffer: Buffer array
  * @flags:  Calculates active flags
  * @width: get width
@@ -153,26 +152,26 @@ int print_rot13string(va_list types, char buffer[],
 	int flags, int width, int precision, int size)
 {
 	char x;
-	char *str;
+	char *string;
 	unsigned int i, j;
 	int count = 0;
 	char in[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 	char out[] = "NOPQRSTUVWXYZABCDEFGHIJKLMnopqrstuvwxyzabcdefghijklm";
 
-	str = va_arg(types, char *);
+	string = va_arg(types, char *);
 	UNUSED(buffer);
 	UNUSED(flags);
 	UNUSED(width);
 	UNUSED(precision);
 	UNUSED(size);
 
-	if (str == NULL)
-		str = "(AHYY)";
-	for (i = 0; str[i]; i++)
+	if (string == NULL)
+		string = "(AHYY)";
+	for (i = 0; string[i]; i++)
 	{
 		for (j = 0; in[j]; j++)
 		{
-			if (in[j] == str[i])
+			if (in[j] == string[i])
 			{
 				x = out[j];
 				write(1, &x, 1);
@@ -182,11 +181,10 @@ int print_rot13string(va_list types, char buffer[],
 		}
 		if (!in[j])
 		{
-			x = str[i];
+			x = string[i];
 			write(1, &x, 1);
 			count++;
 		}
 	}
 	return (count);
 }
-
