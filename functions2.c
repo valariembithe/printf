@@ -1,6 +1,6 @@
 #include "main.h"
 
-/****************** PRINT POINTER ******************/
+/************* PRINT POINTER *************/
 /**
  * print_pointer - Prints the value of a pointer variable
  * @types: List a of arguments
@@ -14,8 +14,9 @@
 int print_pointer(va_list types, char buffer[],
 	int flags, int width, int precision, int size)
 {
-	char extra_c = 0, padd = ' ';
-	int ind = BUFF_SIZE - 2, length = 2, padd_start = 1; /* length=2, for '0x' */
+	char extra_char = 0;
+	char padd = ' ';
+	int ind = BUFF_SIZE - 2, len = 2, padd_start = 1; /* length=2, for '0x' */
 	unsigned long num_addrs;
 	char map_to[] = "0123456789abcdef";
 	void *addrs = va_arg(types, void *);
@@ -35,15 +36,15 @@ int print_pointer(va_list types, char buffer[],
 	{
 		buffer[ind--] = map_to[num_addrs % 16];
 		num_addrs /= 16;
-		length++;
+		len++;
 	}
 
 	if ((flags & F_ZERO) && !(flags & F_MINUS))
 		padd = '0';
 	if (flags & F_PLUS)
-		extra_c = '+', length++;
+		extra_char= '+', len++;
 	else if (flags & F_SPACE)
-		extra_c = ' ', length++;
+		extra_char = ' ', len++;
 
 	ind++;
 
@@ -52,7 +53,7 @@ int print_pointer(va_list types, char buffer[],
 		width, flags, padd, extra_c, padd_start));
 }
 
-/************************* PRINT NON PRINTABLE *************************/
+/******************** PRINT NON PRINTABLE ********************/
 /**
  * print_non_printable - Prints ascii codes in hexa of non printable chars
  * @types: Lists of arguments
@@ -66,7 +67,8 @@ int print_pointer(va_list types, char buffer[],
 int print_non_printable(va_list types, char buffer[],
 	int flags, int width, int precision, int size)
 {
-	int i = 0, offset = 0;
+	int i = 0;
+ 	int offset = 0;
 	char *str = va_arg(types, char *);
 
 	UNUSED(flags);
@@ -92,7 +94,7 @@ int print_non_printable(va_list types, char buffer[],
 	return (write(1, buffer, i + offset));
 }
 
-/************************* PRINT REVERSE *************************/
+/******************** PRINT REVERSE ********************/
 /**
  * print_reverse - Prints reverse string.
  * @types: Lista of arguments
@@ -108,7 +110,8 @@ int print_reverse(va_list types, char buffer[],
 	int flags, int width, int precision, int size)
 {
 	char *str;
-	int i, count = 0;
+	int i = 0;
+       	int count = 0;
 
 	UNUSED(buffer);
 	UNUSED(flags);
@@ -135,7 +138,7 @@ int print_reverse(va_list types, char buffer[],
 	}
 	return (count);
 }
-/************************* PRINT A STRING IN ROT13 *************************/
+/******************** PRINT A STRING IN ROT13 ********************/
 /**
  * print_rot13string - Print a string in rot13.
  * @types: Lista of arguments
